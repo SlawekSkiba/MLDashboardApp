@@ -8,5 +8,4 @@
 Scenario: RegisteringSession
 	Given I want to register new session with name My Training Session
 	When GitHash is SomeGitHash
-	Then Session should be registered with name My Training Session
-	And GitChash is SomeGitHash
+	Then Session should be registered with name My Training Session	

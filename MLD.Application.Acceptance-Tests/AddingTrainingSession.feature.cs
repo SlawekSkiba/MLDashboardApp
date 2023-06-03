@@ -110,9 +110,6 @@ this.ScenarioInitialize(scenarioInfo);
 #line 11
  testRunner.Then("Session should be registered with name My Training Session", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 12
- testRunner.And("GitChash is SomeGitHash", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line hidden
             }
             this.ScenarioCleanup();
         }

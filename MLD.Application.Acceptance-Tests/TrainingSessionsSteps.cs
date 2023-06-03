@@ -1,16 +1,3 @@
-using Azure.Core;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using MLD.Application.TrainingSessions.Models;
-using MLD.Application.TrainingSessions.Services;
-using MLD.Persistence;
-using Moq;
-using TechTalk.SpecFlow;
-
 namespace MLD.Application.Acceptance_Tests;
 
 [Binding]
@@ -21,6 +8,7 @@ public class TrainingSessionsSteps
     private object _configuration;
     private DbContextOptions<AppDbContext> _dbContextOptions;
     private TrainingSessionsService _service;
+    private string _githash;
     private AddTrainingSessionRequest _request;
 
     public TrainingSessionsSteps()
@@ -35,7 +23,6 @@ public class TrainingSessionsSteps
             {
                 { "ConnectionStrings:AppDatabase", "DataSource=:memory:" }
             })
-            //.AddJsonFile("appSettings.json")
             .Build();
 
         _dbContextOptions = new DbContextOptionsBuilder<AppDbContext>()
@@ -65,6 +52,7 @@ public class TrainingSessionsSteps
     [When(@"GitHash is (.+)")]
     public async Task SetGitHash(string githash)
     {
+        _githash = githash;
         _request = _request with { GitHash = githash };
     }
 
@@ -78,21 +66,8 @@ public class TrainingSessionsSteps
             result.Should().NotBeNull();
             result.AsT0.Should().BeOfType<TrainingSessionDto>();
             result.AsT0.Name.Should().Be(sessionName);
+            result.AsT0.GitHash.Should().Be(_githash);
             
-        }
-    }
-
-    [Then("GitHash is (.+)")]
-    public async Task CheckLastGithashName(string githash)
-    {
-        var result = await _service.GetTrainingSessionsAsync();
-
-        using (new AssertionScope())
-        {
-            result.Should().NotBeNull();
-            result.Should().HaveCount(1);
-            result.Last().Should().Match<TrainingSessionDto>(d => d.GitHash == githash);
-
         }
     }
 
